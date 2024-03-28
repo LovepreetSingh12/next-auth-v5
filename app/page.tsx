@@ -1,18 +1,37 @@
-"use client"
+import { Poppins } from "next/font/google";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import LoginButton from "@/components/auth/login-button";
 
+const font = Poppins({
+  subsets : ["latin"],
+  weight : ["600"]
+})
 export default function Home() {
-  const [count, setCount] = useState(0);
-  const handleClick = () => {
-    setCount(count + 1);
-  }
   return (
-    <div className="flex flex-col items-center">
-      <Button size="lg" variant="outline" onClick={handleClick}>
-        Click Me
-      </Button>
-      <p>{count}</p>
-    </div>
+    <main className="flex h-full flex-col items-center justify-center
+    bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))]
+    from-sky-400 to-sky-800">
+
+      <div className="space-y-6 text-center">
+        <h1 className={cn(
+            "text-6xl font-semibold text-white drop-shadow-md",
+            font.className
+          )}>
+          🔒Auth
+        </h1>
+        <p className="text-white text-lg">
+          A simple Authentication service
+        </p>
+        <div>
+          <LoginButton>
+            <Button variant="secondary" size="lg">
+              Sign in
+            </Button>
+          </LoginButton>
+        </div>
+      </div>
+
+    </main>
   );
 }
