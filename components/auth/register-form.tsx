@@ -10,8 +10,14 @@ import { FormSuccess } from '../ui/form-success';
 import { FormError } from '../ui/form-error';
 import { Button } from '../ui/button';
 import CardWrapper from './card-wrapper';
+import { useState, useTransition } from 'react';
+import { register } from '@/actions/register';
 
 export default function RegisterForm() {
+
+    const [isPending, startTransition] = useTransition();
+    const [error, setError] = useState<string | undefined>("");
+    const [success, setSuccess] = useState<string | undefined>("");
 
     const form = useForm<z.infer<typeof RegisterSchema>>({
         resolver: zodResolver(RegisterSchema),
@@ -23,7 +29,16 @@ export default function RegisterForm() {
     });
 
     const handleSubmit = (values : z.infer<typeof RegisterSchema>) => {
-        console.log(values);
+        setError("");
+        setSuccess("");
+
+        startTransition(() => {
+            register(values)
+                .then((data) => {
+                    setError(data.error);
+                    setSuccess(data.success);
+                })
+        })
     }
 
     return (
@@ -48,6 +63,7 @@ export default function RegisterForm() {
                                 <FormControl>
                                 <Input
                                     {...field}
+                                    disabled={isPending}
                                     placeholder='John Doe'
                                     type='name'
                                 />
@@ -65,6 +81,7 @@ export default function RegisterForm() {
                                 <FormControl>
                                 <Input
                                     {...field}
+                                    disabled={isPending}
                                     placeholder='john.doe@example.com'
                                     type='email'
                                 />
@@ -82,6 +99,7 @@ export default function RegisterForm() {
                                 <FormControl>
                                 <Input
                                     {...field}
+                                    disabled={isPending}
                                     placeholder='********'
                                     type='password'
                                 />
@@ -91,11 +109,12 @@ export default function RegisterForm() {
                             )}
                         />
                     </div>
-                    <FormSuccess message=''/>
-                    <FormError message=''/>
+                    <FormSuccess message={success}/>
+                    <FormError message={error}/>
                     <Button
                         type='submit'
                         className='w-full'
+                        disabled={isPending}
                     >
                         Create an account
                     </Button>
